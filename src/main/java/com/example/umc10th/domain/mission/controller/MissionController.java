@@ -1,5 +1,6 @@
 package com.example.umc10th.domain.mission.controller;
 
+import com.example.umc10th.domain.mission.dto.MissionReqDTO;
 import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.mission.service.MissionService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 
 public class MissionController {
-    @GetMapping("/missions?userId")
+    @GetMapping("/missions?userId")//@RequestParam을 쓰고 싶으면 userId 부분은 지우기.
     public String exception(
             @RequestParam String queryParameter
     ){
@@ -20,8 +21,8 @@ public class MissionController {
 
     @PatchMapping("missions/{mission-id}/success")
     public String success(
-            @RequestBody MissionResDTO.RequestBody requestBody(
-                    @RequestBody MissionReqDTO.ReqeustBody dto
+            @RequestBody MissionReqDTO.RequestBody requestBody(
+                    @RequestBody MissionReqDTO.ReqeustBody dto // 이 부분을 빼도 된다.
     ){
                 return missionService.requestBody(dto);
     }
