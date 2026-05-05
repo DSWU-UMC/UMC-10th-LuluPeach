@@ -6,26 +6,27 @@ import com.example.umc10th.domain.mission.service.MissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-
 public class MissionController {
-    @GetMapping("/missions?userId")//@RequestParam을 쓰고 싶으면 userId 부분은 지우기.
-    public String exception(
-            @RequestParam String queryParameter
-    ){
-        return MissionService.singleParameter(queryParameter);
+
+    private final MissionService missionService;
+
+    // 내가 받은 미션 조회
+    @GetMapping("/missions/me")
+    public MissionResDTO.MyMissionListDTO getMyMissions(
+            @RequestParam Long memberId
+    ) {
+        return missionService.getMyMissions(memberId);
     }
 
-    @PatchMapping("missions/{mission-id}/success")
-    public String success(
-            @RequestBody MissionReqDTO.RequestBody requestBody(
-                    @RequestBody MissionReqDTO.ReqeustBody dto // 이 부분을 빼도 된다.
-    ){
-                return missionService.requestBody(dto);
+    // 미션 성공 누르기
+    @PatchMapping("/member-missions/{memberMissionId}/complete")
+    public MissionResDTO.CompleteMissionResultDTO completeMission(
+            @PathVariable Long memberMissionId
+    ) {
+        return missionService.completeMission(memberMissionId);
     }
-    )
-
 }
+
