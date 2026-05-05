@@ -50,6 +50,7 @@ public class Review {
         this.star = star;
         this.store = store;
         this.member = member;
+        this.createdAt = LocalDateTime.now();
     }
 
     public void addReply(Reply reply) {
