@@ -1,5 +1,6 @@
 package com.example.umc10th.domain.review.converter;
 
+import com.example.umc10th.domain.mission.dto.MissionResDTO;
 import com.example.umc10th.domain.review.dto.ReviewReqDTO;
 import com.example.umc10th.domain.review.dto.ReviewResDTO;
 import com.example.umc10th.domain.review.entity.Review;
@@ -39,4 +40,34 @@ public class ReviewConverter {
                 .message("리뷰 작성이 완료되었습니다")
                 .build();
     }
+
+    // 내가 쓴 리뷰 조회 DTO
+    public static ReviewResDTO.MyReviewDTO toMyReviewDTO(Review review) {
+        return ReviewResDTO.MyReviewDTO.builder()
+                .reviewId(review.getId())
+                .storeId(review.getStore().getId())
+                .storeName(review.getStore().getName())
+                .content(review.getContent())
+                .star(review.getStar())
+                .createdAt(review.getCreatedAt())
+                .build();
+    }
+
+
+    //페이지네이션 틀 생성
+    public static <T> ReviewResDTO.Pagination toPagination(
+            List<T> data,
+            Boolean hasNext,
+            String nextCursor,
+            Integer pageSize
+    ){
+        return ReviewResDTO.Pagination.<T>builder()
+                .data(data)
+                .hasNext(hasNext)
+                .nextCursor(nextCursor)
+                .pageSize(pageSize)
+                .build();
+    }
+
+
 }

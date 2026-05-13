@@ -30,7 +30,6 @@ public class MissionService {
     private final MissionRepository missionRepository;
     private final StoreRepository storeRepository;
 
-    private final MissionConverter missionConverter;
 
 
     public static String singleParameter(String singleParameter) {
