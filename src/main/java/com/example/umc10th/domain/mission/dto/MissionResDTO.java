@@ -1,6 +1,6 @@
 package com.example.umc10th.domain.mission.dto;
 
-import com.sun.tools.javac.comp.MatchBindingsComputer;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class MissionResDTO {
     @Builder
     @AllArgsConstructor
     public static class MyMissionListDTO {
-
+        private Long memberId;
         private List<MyMissionDTO> missions;
     }
 
@@ -37,6 +37,8 @@ public class MissionResDTO {
 
         private Boolean isComplete;
     }
+
+
 
     @Getter
     @Builder

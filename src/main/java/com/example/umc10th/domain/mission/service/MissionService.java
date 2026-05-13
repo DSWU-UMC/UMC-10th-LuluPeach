@@ -12,6 +12,7 @@ import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
 import com.example.umc10th.domain.mission.repository.MissionRepository;
 import com.example.umc10th.domain.mission.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,14 +75,34 @@ public class MissionService {
     }
 
     // 가게 내 미션 조회
-    public static MissionResDTO.GetMission toGetMission(
-            Mission mission
-    ){
-        return MissionResDTO.GetMission.builder()
-                .conditional(mission.getConditional())
-                .point(mission.getPoint())
-                .missionId(mission.getId())
+//    public static MissionResDTO.GetMission toGetMission(
+//            Mission mission
+//    ){
+//        return MissionResDTO.GetMission.builder()
+//                .conditional(mission.getConditional())
+//                .point(mission.getPoint())
+//                .missionId(mission.getId())
+//                .build();
+//    }
+
+    // 내가 진행 중인 미션 조회
+    public MissionResDTO.MyMissionListDTO getMyOngoingMissions(Long memberId) {
+        List<MemberMission> memberMissions =
+                memberMissionRepository.findAllByMemberIdAndIsCompleteFalse(memberId);
+
+        List<MissionResDTO.MyMissionDTO> missions = memberMissions.stream()
+                .map(MissionConverter::toMyMissionDTO)
+                .toList();
+
+        return MissionResDTO.MyMissionListDTO.builder()
+                .memberId(memberId)
+                .missions(missions)
                 .build();
     }
+
+
+
+
+
 
 }

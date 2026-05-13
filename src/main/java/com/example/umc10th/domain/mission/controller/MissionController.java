@@ -49,11 +49,27 @@ public class MissionController {
     // 가게 내 미션들 조회
     @GetMapping("/v1/stores/{storeId}/missions")
     public ApiResponse<MissionResDTO.GetMission> getMissions(
-            @PathVariable Long storeId
+            @PathVariable Long storeId,
+
+            @RequestParam Integer pageSize,
+            @RequestParam Integer pageNumber,
+            @RequestParam(required = false) String sort
     ){
         BaseSuccessCode code = MissionSuccessCode.OK;
         return ApiResponse.onSuccess(code, missionService.getMissions(storeId));
     }
+
+    // 내가 진행 중인 미션 조회
+    @GetMapping("/v1/members/{memberId}/missions/ongoing")
+    public ApiResponse<MissionResDTO.MyMissionListDTO> getMyOngoingMissions(
+            @PathVariable Long memberId
+    ) {
+        return ApiResponse.onSuccess(
+                MissionSuccessCode.OK,
+                missionService.getMyOngoingMissions(memberId)
+        );
+    }
+
 
 }
 

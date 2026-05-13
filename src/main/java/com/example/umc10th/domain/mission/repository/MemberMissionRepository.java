@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MemberMissionRepository extends JpaRepository<MemberMission, Long> {
     List<MemberMission> findByMemberId(Long memberId);
+
+    List<MemberMission> findAllByMemberIdAndIsCompleteFalse(Long memberId);
 }
