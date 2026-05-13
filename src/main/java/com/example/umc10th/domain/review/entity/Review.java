@@ -40,6 +40,8 @@ public class Review {
     @OneToOne(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Reply reply;
 
+
+    // cascade 를 추가하면 review를 지웠을 때 reply 가 같이 지워짐.
     public Review(
             String content,
             Float star,

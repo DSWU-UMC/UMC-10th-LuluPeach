@@ -1,5 +1,6 @@
 package com.example.umc10th.domain.mission.dto;
 
+import com.sun.tools.javac.comp.MatchBindingsComputer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,5 +48,25 @@ public class MissionResDTO {
         private Boolean isComplete;
 
         private String message;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class GetMission {
+        private Long storeId;
+        private List<MissionInfo> missions;
+
+
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class MissionInfo {
+        private Long missionId;
+        private LocalDate deadline;
+        private String conditional;
+        private Integer point;
     }
 }
