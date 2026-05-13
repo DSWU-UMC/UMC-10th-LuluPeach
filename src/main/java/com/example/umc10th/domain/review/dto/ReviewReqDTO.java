@@ -5,17 +5,19 @@ import lombok.Getter;
 import java.util.List;
 
 public class ReviewReqDTO {
-    @Getter
-    public static class RequestBodyClass{
-            private Long userId;
-            private String content;
-            private Float star;
-            private Long storeId;
-            private List<ReviewResDTO.Photo> photos;
-    }
 
     @Getter
-    public static class Photo {
-        private String photo_url;
+    public static class CreateDTO {
+
+        private Long memberId;
+
+        private Long storeId;
+
+        private String content;
+
+        private Float star;
+
+        private List<String> photoUrls;
     }
 }
+

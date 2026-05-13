@@ -1,28 +1,50 @@
 package com.example.umc10th.domain.member.controller;
 
-import com.example.umc10th.domain.member.dto.*;
-import com.example.umc10th.domain.member.entity.Member;
+import com.example.umc10th.domain.member.dto.MemberReqDTO;
+import com.example.umc10th.domain.member.dto.MemberResDTO;
 import com.example.umc10th.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    //여기 MemeberResDTO 는 아직 작성 안 했으니깐 오류 생기는 게 정상이죠??
-    @PostMapping("/users/signup")
-    public MemberResDTO.RequestBody requestSignup(
-            @RequestBody MemberReqDTO.RequestBodyClass dto
+    // 회원가입
+    @PostMapping("/signup")
+    public MemberResDTO.SignupResultDTO signup(
+            @RequestBody MemberReqDTO.SignupDTO request
     ) {
-        return memberService.requestBody(dto);
+        return memberService.signup(request);
     }
 
-    @GetMapping("/mypage/{memberId}")
-    public String myPage(@PathVariable String pathVariable) {
-        return memberService.singleParameter(pathVariable);
+    // 내 포인트 조회
+    @GetMapping("/me/points")
+    public MemberResDTO.PointDTO getMyPoint(
+            @RequestParam Long memberId // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
+    ) {
+        return memberService.getMyPoint(memberId);
     }
+
+    // 내 정보 변경
+    @PatchMapping("/me")
+    public MemberResDTO.UpdateResultDTO updateMyInfo(
+            @RequestParam Long memberId, // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
+            @RequestBody MemberReqDTO.UpdateDTO request
+    ) {
+        return memberService.updateMyInfo(memberId, request);
+    }
+
+    // 계정 탈퇴
+    @DeleteMapping("/me")
+    public MemberResDTO.DeleteResultDTO deleteMember(
+            @RequestBody MemberReqDTO.DeleteDTO request
+    ) {
+        return memberService.deleteMember(request);
+    }
+
+
 }
