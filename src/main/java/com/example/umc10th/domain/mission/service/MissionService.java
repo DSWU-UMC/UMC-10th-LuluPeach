@@ -12,6 +12,9 @@ import com.example.umc10th.domain.mission.repository.MemberMissionRepository;
 import com.example.umc10th.domain.mission.repository.MissionRepository;
 import com.example.umc10th.domain.mission.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,8 @@ public class MissionService {
     private final MemberMissionRepository memberMissionRepository;
     private final MissionRepository missionRepository;
     private final StoreRepository storeRepository;
+
+
 
     public static String singleParameter(String singleParameter) {
         return singleParameter;
@@ -56,32 +61,69 @@ public class MissionService {
         return MissionConverter.toCompleteMissionResultDTO(memberMission);
     }
 
-    public MissionResDTO.GetMission getMissions(Long storeId) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new MissionException(StoreErrorCode.NOT_FOUND));
-
-        List<MissionResDTO.MissionInfo> missions = missionRepository.findAllByStoreId(storeId)
-                .stream()
-                .map(mission -> new MissionResDTO.MissionInfo(
-                        mission.getId(),
-                        mission.getDeadline(),
-                        mission.getConditional(),
-                        mission.getPoint()
-                ))
-                .toList();
-
-        return new MissionResDTO.GetMission(store.getId(), missions);
-    }
+//    public MissionResDTO.GetMission getMissions(Long storeId) {
+//        Store store = storeRepository.findById(storeId)
+//                .orElseThrow(() -> new MissionException(StoreErrorCode.NOT_FOUND));
+//
+//        List<MissionResDTO.MissionInfo> missions = missionRepository.findAllByStoreId(storeId)
+//                .stream()
+//                .map(mission -> new MissionResDTO.MissionInfo(
+//                        mission.getId(),
+//                        mission.getDeadline(),
+//                        mission.getConditional(),
+//                        mission.getPoint()
+//                ))
+//                .toList();
+//
+//        return new MissionResDTO.GetMission(store.getId(), missions);
+//    }
 
     // 가게 내 미션 조회
-    public static MissionResDTO.GetMission toGetMission(
-            Mission mission
-    ){
-        return MissionResDTO.GetMission.builder()
-                .conditional(mission.getConditional())
-                .point(mission.getPoint())
-                .missionId(mission.getId())
-                .build();
+//    public static MissionResDTO.GetMission toGetMission(
+//            Mission mission
+//    ){
+//        return MissionResDTO.GetMission.builder()
+//                .conditional(mission.getConditional())
+//                .point(mission.getPoint())
+//                .missionId(mission.getId())
+//                .build();
+//    }
+
+    // 내가 진행 중인 미션 조회
+//    public MissionResDTO.MyMissionListDTO getMyOngoingMissions(Long memberId) {
+//        List<MemberMission> memberMissions =
+//                memberMissionRepository.findAllByMemberIdAndIsCompleteFalse(memberId);
+//
+//        List<MissionResDTO.MyMissionDTO> missions = memberMissions.stream()
+//                .map(MissionConverter::toMyMissionDTO)
+//                .toList();
+//
+//        return MissionResDTO.MyMissionListDTO.builder()
+//                .memberId(memberId)
+//                .missions(missions)
+//                .build();
+//    }
+
+
+    // 내가 진행 중인 미션 조회 (오프셋 기반 페이징)
+    public Page<MissionResDTO.MyMissionDTO> getMyOngoingMissions(Long memberId, Integer pageSize, Integer pageNumer, String sort) {
+        // 정렬 정보 생성
+        Sort sortInfo;
+        if(sort != null){
+            sortInfo = Sort.by(sort);
+        } else{
+            sortInfo = Sort.by("id").descending();
+        }
+
+        // 페이지 정보들을 PageRequest 로 만들기
+        PageRequest pageRequest = PageRequest.of(pageNumer, pageSize, sortInfo);
+
+        // 내가 진행 중인 미션들 조회
+        Page<MemberMission> myMissionList = memberMissionRepository.findAllByMemberIdAndIsCompleteFalse(memberId, pageRequest);
+
+
+        // 미션 응답 DTO로 포장하기
+        return myMissionList.map(MissionConverter::toMyMissionDTO);
     }
 
 }
