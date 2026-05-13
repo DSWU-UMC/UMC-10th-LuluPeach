@@ -7,6 +7,8 @@ import com.example.umc10th.domain.mission.entity.Store;
 import com.example.umc10th.domain.mission.entity.mapping.MemberMission;
 import lombok.Builder;
 
+import java.util.List;
+
 
 public class MissionConverter {
 
@@ -40,6 +42,19 @@ public class MissionConverter {
                 .conditional(dto.conditional())
                 .point(dto.point())
                 .deadline(dto.deadline())
+                .build();
+    }
+
+    //페이지네이션 틀 생성
+    public static <T> MissionResDTO.Pagination toPagination(
+            List<T> data,
+            Integer pageNumber,
+            Integer pageSize
+    ){
+        return MissionResDTO.Pagination.<T>builder()
+                .data(data)
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
                 .build();
     }
 }

@@ -38,6 +38,13 @@ public class MissionResDTO {
         private Boolean isComplete;
     }
 
+    // 페이지네이션 툴
+    @Builder
+    public record Pagination<T>(
+            List<T> data,
+            Integer pageNumber,
+            Integer pageSize
+    ){}
 
 
     @Getter

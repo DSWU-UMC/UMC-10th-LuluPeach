@@ -9,6 +9,7 @@ import com.example.umc10th.global.apiPayload.ApiResponse;
 import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -47,28 +48,43 @@ public class MissionController {
     }
 
     // 가게 내 미션들 조회
-    @GetMapping("/v1/stores/{storeId}/missions")
-    public ApiResponse<MissionResDTO.GetMission> getMissions(
-            @PathVariable Long storeId,
+//    @GetMapping("/v1/stores/{storeId}/missions")
+//    public ApiResponse<MissionResDTO.GetMission> getMissions(
+//            @PathVariable Long storeId,
+//
+//            @RequestParam Integer pageSize,
+//            @RequestParam Integer pageNumber,
+//            @RequestParam(required = false) String sort
+//    ){
+//        BaseSuccessCode code = MissionSuccessCode.OK;
+//        return ApiResponse.onSuccess(code, missionService.getMissions(storeId));
+//    }
 
+    // 내가 진행 중인 미션 조회
+//    @GetMapping("/v1/members/{memberId}/missions/ongoing")
+//    public ApiResponse<MissionResDTO.MyMissionListDTO> getMyOngoingMissions(
+//            @PathVariable Long memberId
+//    ) {
+//        return ApiResponse.onSuccess(
+//                MissionSuccessCode.OK,
+//                missionService.getMyOngoingMissions(memberId)
+//        );
+//    }
+
+    // 내가 진행 중인 미션 조회 (오프셋 기반 페이징)
+    @GetMapping("/v1/members/{memberId}/missions/ongoing")
+    public ApiResponse<Page<MissionResDTO.MyMissionDTO>> getMyOngoingMissions(
+            @PathVariable Long memberId,
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber,
             @RequestParam(required = false) String sort
-    ){
+    ) {
         BaseSuccessCode code = MissionSuccessCode.OK;
-        return ApiResponse.onSuccess(code, missionService.getMissions(storeId));
+        return ApiResponse.onSuccess(code, missionService.getMyOngoingMissions(memberId, pageSize, pageNumber, sort));
     }
 
-    // 내가 진행 중인 미션 조회
-    @GetMapping("/v1/members/{memberId}/missions/ongoing")
-    public ApiResponse<MissionResDTO.MyMissionListDTO> getMyOngoingMissions(
-            @PathVariable Long memberId
-    ) {
-        return ApiResponse.onSuccess(
-                MissionSuccessCode.OK,
-                missionService.getMyOngoingMissions(memberId)
-        );
-    }
+
+
 
 
 }
