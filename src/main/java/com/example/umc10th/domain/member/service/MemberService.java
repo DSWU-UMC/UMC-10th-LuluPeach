@@ -6,6 +6,7 @@ import com.example.umc10th.domain.member.entity.Food;
 import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.entity.mapping.MemberFood;
 import com.example.umc10th.domain.member.exception.MemberException;
+import com.example.umc10th.domain.member.exception.code.MemberErrorCode;
 import com.example.umc10th.domain.member.repository.FoodRepository;
 import com.example.umc10th.domain.member.repository.MemberFoodRepository;
 import com.example.umc10th.domain.member.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,7 +30,7 @@ public class MemberService {
     @Transactional
     public MemberResDTO.SignupResultDTO signup(MemberReqDTO.SignupDTO request) {
         if (memberRepository.existsByEmailAndDeletedAtIsNull(request.getEmail())) {
-            throw new MemberException("이미 가입된 이메일입니다.");
+            throw new MemberException(MemberErrorCode.MEMBER_ALREADY_EXISTS);
         }
 
         Member member = memberRepository.save(MemberConverter.toMember(request));
@@ -68,7 +70,7 @@ public class MemberService {
         Member member = getActiveMember(request.getMemberId());
 
         if (!member.isPasswordMatched(request.getPassword())) {
-            throw new MemberException("비밀번호가 일치하지 않습니다.");
+            throw new MemberException(MemberErrorCode.INVALID_PASSWORD);
         }
 
         member.delete();
@@ -82,7 +84,9 @@ public class MemberService {
 
     private Member getActiveMember(Long memberId) {
         return memberRepository.findByIdAndDeletedAtIsNull(memberId)
-                .orElseThrow(() -> new MemberException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new MemberException(MemberErrorCode.MEMBER_NOT_FOUND)
+                );
     }
 
     private void saveMemberFoods(Member member, List<Long> foodIds) {
@@ -94,7 +98,7 @@ public class MemberService {
         List<Food> foods = foodRepository.findAllById(distinctFoodIds);
 
         if (foods.size() != distinctFoodIds.size()) {
-            throw new MemberException("존재하지 않는 음식 취향이 포함되어 있습니다.");
+            throw new MemberException(MemberErrorCode.INVALID_FOOD_PREFERENCE);
         }
 
         List<MemberFood> memberFoods = foods.stream()
@@ -102,6 +106,36 @@ public class MemberService {
                 .toList();
 
         memberFoodRepository.saveAll(memberFoods);
+    }
+
+
+    // 회원가입
+    public MemberSignupResponse signup(MemberSignupRequest request) {
+
+        // 이메일 중복 검사
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
+
+        Member member = new Member(
+                request.getName(),
+                request.getGender(),
+                request.getBirth(),
+                request.getAddress(),
+                0, // 초기 포인트
+                request.getEmail(),
+                request.getPassword(),
+                request.getPhoneNum(),
+                request.getProfileUrl()
+        );
+
+        Member savedMember = memberRepository.save(member);
+
+        return new MemberSignupResponse(
+                savedMember.getId(),
+                savedMember.getName(),
+                savedMember.getEmail()
+        );
     }
 
 }

@@ -1,13 +1,16 @@
 package com.example.umc10th.domain.member.controller;
 
 import com.example.umc10th.domain.member.dto.MemberResDTO;
+import com.example.umc10th.domain.member.dto.MemberSignupRequest;
+import com.example.umc10th.domain.member.dto.MemberSignupResponse;
 import com.example.umc10th.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final MemberService memberService;
@@ -16,5 +19,14 @@ public class AuthController {
     @PostMapping("/logout")
     public MemberResDTO.LogoutResultDTO logout() {
         return memberService.logout();
+    }
+
+    // 회원가입
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MemberSignupResponse signup(
+            @RequestBody MemberSignupRequest request
+    ) {
+        return memberService.signup(request);
     }
 }
