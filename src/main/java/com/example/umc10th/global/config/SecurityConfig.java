@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+// 보안 규칙이 해당 코드임을 알려주는 어노테이션
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -20,9 +21,9 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/v3/api-docs/**",
 
-            // 로그인
-            "/auth/login",
-            "/auth/signup"
+
+            "/auth/login", // 로그인
+            "/auth/signup" // 회원가입
     };
 
     @Bean
@@ -30,11 +31,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
+                // requestMatchers를 통해 특정 URL 패턴에 대한 접근 권한을 설정, permitAll을 통해 모두 접근 가능하도록 함
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(allowUris).permitAll() // requestMatchers를 통해 특정 URL 패턴에 대한 접근 권한을 설정, permitAll을 통해 모두 접근 가능하도록.
-                        .anyRequest().authenticated()
+                        .requestMatchers(allowUris).permitAll()
+                        .anyRequest().authenticated() // 그 외 API는 전부 로그인 필요
                 )
-                // 폼 로그인
+                //Spring Security 기본 로그인 시스템 사용겠하겠다는 뜻
                 .formLogin(form -> form
                         .defaultSuccessUrl("/swagger-ui/index.html", true)
                         .permitAll()
@@ -51,8 +53,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        //return new BCryptPasswordEncoder();
         // 일단 암호화 안 함.
+        //return new BCryptPasswordEncoder();
+
         return NoOpPasswordEncoder.getInstance();
     }
 }

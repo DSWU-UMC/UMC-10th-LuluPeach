@@ -15,6 +15,7 @@ import java.util.List;
 public class AuthMember implements UserDetails {
     private final Member member;
 
+    // 권한 확인하는 것. 현재는 권한 없음.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

@@ -17,11 +17,11 @@ public class CustomUserDetailService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    // user의 이름을 받아서 
+    // username(이메일)을 받아서 사용자를 찾음
     public UserDetails loadUserByUsername(
             String username
     ) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(username)
+        Member member = memberRepository.findByEmail(username) // memberRepository를 통해 이메일로 사용자를 찾고 있음
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
         return new AuthMember(member);
     }
