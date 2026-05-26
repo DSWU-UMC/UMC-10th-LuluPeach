@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @Setter
@@ -27,4 +28,7 @@ public class MemberSignupRequest {
     private String phoneNum;
 
     private String profileUrl;
+
+    // 선호 음식 ID 목록
+    private List<Long> foodIds;
 }
