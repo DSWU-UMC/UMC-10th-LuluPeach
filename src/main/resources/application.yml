@@ -21,8 +21,8 @@ spring:
       hibernate:
         format_sql: true # 출력되는 SQL 쿼리를 보기 좋게 포맷팅
 
-  jwt:
-    token:
-      secretKey: ${JWT_SECRET_KEY}
-      expiration:
-        access: 1800000 # 30분
+jwt:
+  token:
+    secretKey: T9m1v6Y2bW9M5hJwQ7R0fAzz2Kq3pXc8LzN4sVt1YdE=
+    expiration:
+      access: 1800000 # 30분

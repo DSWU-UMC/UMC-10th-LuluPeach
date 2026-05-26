@@ -1,8 +1,7 @@
 package com.example.umc10th.domain.member.controller;
 
-import com.example.umc10th.domain.member.dto.MemberResDTO;
-import com.example.umc10th.domain.member.dto.MemberSignupRequest;
-import com.example.umc10th.domain.member.dto.MemberSignupResponse;
+import com.example.umc10th.domain.member.dto.*;
+import com.example.umc10th.domain.member.service.AuthService;
 import com.example.umc10th.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final MemberService memberService;
+    private final AuthService authService;
 
     // 로그아웃
     @PostMapping("/logout")
@@ -29,4 +29,14 @@ public class AuthController {
     ) {
         return memberService.signup(request);
     }
+
+
+    // 로그인
+    @PostMapping("/login")
+    public MemberLoginResponse login(
+            @RequestBody MemberLoginRequest request
+    ) {
+        return authService.login(request);
+    }
+
 }

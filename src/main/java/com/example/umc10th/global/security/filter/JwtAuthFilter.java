@@ -25,7 +25,7 @@ import com.example.umc10th.global.security.service.CustomUserDetailService;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(
