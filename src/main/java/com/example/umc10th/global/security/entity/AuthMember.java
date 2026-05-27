@@ -30,4 +30,8 @@ public class AuthMember implements UserDetails {
     public String getUsername() {
         return member.getEmail();
     }
+
+    public Long getMemberId() {
+        return member.getId();
+    }
 }

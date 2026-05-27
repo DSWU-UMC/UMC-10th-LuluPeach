@@ -2,8 +2,12 @@ package com.example.umc10th.domain.member.controller;
 
 import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
+import com.example.umc10th.domain.member.exception.code.MemberSuccessCode;
 import com.example.umc10th.domain.member.service.MemberService;
+import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
+import com.example.umc10th.global.security.entity.AuthMember;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,9 +28,10 @@ public class MemberController {
     // 내 포인트 조회
     @GetMapping("/me/points")
     public MemberResDTO.PointDTO getMyPoint(
-            @RequestParam Long memberId // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
-    ) {
-        return memberService.getMyPoint(memberId);
+            @AuthenticationPrincipal AuthMember member // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
+    ){
+        // BaseSuccessCode code = MemberSuccessCode.OK
+        return memberService.getMyPoint(member);
     }
 
     // 내 정보 변경

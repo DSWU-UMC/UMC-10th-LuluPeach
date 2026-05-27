@@ -25,14 +25,16 @@ public class JwtUtil {
     private final Duration accessExpiration;
 
     public JwtUtil(
+            // application.yml에 있는 JWT 정보를 가져옴.
             @Value("${jwt.token.secretKey}") String secret,
             @Value("${jwt.token.expiration.access}") Long accessExpiration
     ) {
+        // JWT Signature에 사용할 암호화 키 생성.
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessExpiration = Duration.ofMillis(accessExpiration);
     }
 
-    // AccessToken 생성
+    // AccessToken 생성(로그인 성공시 아래 메소드 실행 됨)
     public String createAccessToken(AuthMember member) {
         return createToken(member, accessExpiration);
     }
