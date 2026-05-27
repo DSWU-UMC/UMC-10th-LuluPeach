@@ -106,4 +106,8 @@ public class Member {
     public boolean isPasswordMatched(String password) {
         return this.password.equals(password);
     }
+
+    public String getSocialUid() {
+        return this.getSocialUid();
+    }
 }
