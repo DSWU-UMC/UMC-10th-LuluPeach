@@ -55,9 +55,10 @@ public class MemberService {
         return MemberConverter.toPointDTO(member);
     }
 
+    // 내 정보 수정
     @Transactional
-    public MemberResDTO.UpdateResultDTO updateMyInfo(Long memberId, MemberReqDTO.UpdateDTO request) {
-        Member member = getActiveMember(memberId);
+    public MemberResDTO.UpdateResultDTO updateMyInfo(AuthMember authMember, MemberReqDTO.UpdateDTO request) {
+        Member member = getActiveMember(authMember.getMemberId());
 
         member.updateInfo(
                 request.getName(),

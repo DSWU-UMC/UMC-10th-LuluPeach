@@ -37,10 +37,10 @@ public class MemberController {
     // 내 정보 변경
     @PatchMapping("/me")
     public MemberResDTO.UpdateResultDTO updateMyInfo(
-            @RequestParam Long memberId, // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
+            @AuthenticationPrincipal AuthMember member, // 나중에 JWT 방식으로 바꾸면 여기를 없앨 예정.
             @RequestBody MemberReqDTO.UpdateDTO request
     ) {
-        return memberService.updateMyInfo(memberId, request);
+        return memberService.updateMyInfo(member, request);
     }
 
     // 계정 탈퇴
