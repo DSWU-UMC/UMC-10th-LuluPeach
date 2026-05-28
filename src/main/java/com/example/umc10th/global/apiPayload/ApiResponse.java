@@ -1,6 +1,5 @@
 package com.example.umc10th.global.apiPayload;
 
-import com.example.umc10th.global.apiPayload.code.BaseErrorCode;
 import com.example.umc10th.global.apiPayload.code.BaseSuccessCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,18 +18,6 @@ public class ApiResponse<T> {
                 true,
                 successCode.getCode(),
                 successCode.getMessage(),
-                result
-        );
-    }
-
-    public static <T> ApiResponse<T> onFailure(
-            BaseErrorCode code,
-            T result
-    ) {
-        return new ApiResponse<>(
-                false,
-                code.getCode(),
-                code.getMessage(),
                 result
         );
     }

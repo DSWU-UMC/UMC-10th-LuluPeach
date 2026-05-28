@@ -141,23 +141,6 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
 
-        // 음식 저장
-        if (request.getFoodIds() != null && !request.getFoodIds().isEmpty()) {
-
-            List<Food> foods = foodRepository.findAllById(request.getFoodIds());
-
-            // 존재하지 않는 음식 ID 검증
-            if (foods.size() != request.getFoodIds().size()) {
-                throw new MemberException(MemberErrorCode.INVALID_FOOD_PREFERENCE);
-            }
-
-            List<MemberFood> memberFoods = foods.stream()
-                    .map(food -> new MemberFood(savedMember, food))
-                    .toList();
-
-            memberFoodRepository.saveAll(memberFoods);
-        }
-
         return new MemberSignupResponse(
                 savedMember.getId(),
                 savedMember.getName(),
