@@ -1,8 +1,11 @@
 package com.example.umc10th.global.config;
 
 import com.example.umc10th.global.security.filter.JwtAuthFilter;
+import com.example.umc10th.global.security.handler.OAuthSuccessHandler;
+import com.example.umc10th.global.security.service.CustomOAuthService;
 import com.example.umc10th.global.security.service.CustomUserDetailService;
 import com.example.umc10th.global.security.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -27,6 +31,8 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailService customUserDetailService;
+    private final CustomOAuthService customOAuthService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     private final String[] allowUris = {
             // Swagger 허용
@@ -36,7 +42,12 @@ public class SecurityConfig {
 
 
             "/auth/login", // 로그인
-            "/auth/signup" // 회원가입
+            "/auth/signup", // 회원가입
+
+
+            "/oauth/**",
+            "/login/**",
+            "/error"
     };
 
     @Bean
@@ -51,6 +62,28 @@ public class SecurityConfig {
                 )
                 //Spring Security 기본 로그인 시스템 사용겠하겠다는 뜻
                 .formLogin(AbstractHttpConfigurer::disable)
+
+                // OAuth2 로그인
+                .oauth2Login(oauth -> oauth
+                        // 인증 엔트리 포인트
+                        .authorizationEndpoint(auth -> auth
+                                .baseUri("/oauth/authorize")
+                        )
+                        // 콜백 주소
+                        .redirectionEndpoint(redirect -> redirect
+                                .baseUri("/oauth/callback/*")
+                        )
+                        // 인증 완료 후 사용자 정보 처리
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuthService)
+                        )
+                        // 성공 시 JWT 발급
+                        .successHandler((AuthenticationSuccessHandler) oAuthSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            exception.printStackTrace();
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
+                        })
+                )
 
                 // 세션로그인 방지
                 .sessionManagement(AbstractHttpConfigurer::disable)

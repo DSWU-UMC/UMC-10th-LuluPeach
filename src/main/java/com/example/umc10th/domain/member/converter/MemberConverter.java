@@ -4,6 +4,7 @@ import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.dto.MemberResDTO;
 import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.enums.Gender;
+import com.example.umc10th.global.security.dto.OAuthDTO;
 
 public class MemberConverter {
 
@@ -60,5 +61,15 @@ public class MemberConverter {
         }
 
         return Gender.valueOf(gender.toUpperCase());
+    }
+
+    public static Member toMember(OAuthDTO dto) {
+        return new Member(
+                dto.getName(),
+                0,
+                dto.getSocialEmail(),
+                dto.getSocialType(),
+                dto.getSocialUid()
+        );
     }
 }

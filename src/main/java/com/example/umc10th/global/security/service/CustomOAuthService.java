@@ -1,6 +1,7 @@
 package com.example.umc10th.global.security.service;
 
 import com.example.umc10th.domain.member.converter.MemberConverter;
+import com.example.umc10th.domain.member.dto.MemberReqDTO;
 import com.example.umc10th.domain.member.entity.Member;
 import com.example.umc10th.domain.member.enums.SocialType;
 import com.example.umc10th.domain.member.exception.MemberException;
@@ -39,13 +40,17 @@ public class CustomOAuthService extends DefaultOAuth2UserService {
                             .getRegistrationId()
                             .toUpperCase()
             );
-            socialUid = String.valueOf(oAuth2User.getAttribute("id"));
+            Object socialIdObj = oAuth2User.getAttributes().get("id");
+            socialUid = socialIdObj.toString();
         } catch (IllegalArgumentException e) {
             throw new MemberException(MemberErrorCode.NOT_SUPPORT_SOCIAL_PROVIDER);
         }
 
-        Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        Map<String, Object> kakaoAccount =
+                (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
+
+        Map<String, Object> profile =
+                (Map<String, Object>) kakaoAccount.get("profile");
 
         OAuthDTO dto;
 
@@ -60,6 +65,7 @@ public class CustomOAuthService extends DefaultOAuth2UserService {
 
         Member member = memberRepository.findBySocialTypeAndSocialUid(providerId, socialUid)
                 .orElseGet(() -> {
+                    //Member newMember = MemberConverter.toMember((MemberReqDTO.SignupDTO) dto);
                     Member newMember = MemberConverter.toMember(dto);
                     return memberRepository.save(newMember);
                 });
