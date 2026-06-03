@@ -10,13 +10,13 @@ import com.example.umc10th.domain.member.exception.code.MemberErrorCode;
 import com.example.umc10th.domain.member.repository.FoodRepository;
 import com.example.umc10th.domain.member.repository.MemberFoodRepository;
 import com.example.umc10th.domain.member.repository.MemberRepository;
+import com.example.umc10th.global.security.entity.AuthMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -39,16 +39,26 @@ public class MemberService {
         return MemberConverter.toSignupResultDTO(member);
     }
 
+    // 내 포인트 조회
+//    @Transactional(readOnly = true)
+//    public MemberResDTO.PointDTO getMyPoint(AuthMember memberId) {
+//        Member member = getActiveMember(memberId);
+//
+//        return MemberConverter.toPointDTO(member);
+//    }
     @Transactional(readOnly = true)
-    public MemberResDTO.PointDTO getMyPoint(Long memberId) {
-        Member member = getActiveMember(memberId);
+    public MemberResDTO.PointDTO getMyPoint(AuthMember authMember) {
+
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return MemberConverter.toPointDTO(member);
     }
 
+    // 내 정보 수정
     @Transactional
-    public MemberResDTO.UpdateResultDTO updateMyInfo(Long memberId, MemberReqDTO.UpdateDTO request) {
-        Member member = getActiveMember(memberId);
+    public MemberResDTO.UpdateResultDTO updateMyInfo(AuthMember authMember, MemberReqDTO.UpdateDTO request) {
+        Member member = getActiveMember(authMember.getMemberId());
 
         member.updateInfo(
                 request.getName(),

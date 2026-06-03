@@ -30,6 +30,12 @@ public enum MemberErrorCode implements BaseErrorCode {
             HttpStatus.BAD_REQUEST,
             "MEMBER400_2",
             "존재하지 않는 음식 취향이 포함되어 있습니다."
+    ),
+    NOT_SUPPORT_SOCIAL_PROVIDER(
+
+            HttpStatus.BAD_REQUEST,
+            "MEBER400_3",
+            "존재하지 않는 소셜 로그인입니다."
     );
 
     private final HttpStatus status;

@@ -2,6 +2,7 @@ package com.example.umc10th.domain.member.entity;
 
 
 import com.example.umc10th.domain.member.enums.Gender;
+import com.example.umc10th.domain.member.enums.SocialType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
@@ -58,6 +60,11 @@ public class Member {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    private String socialUid;
+
     public Member(
             String name,
             Gender gender,
@@ -78,6 +85,28 @@ public class Member {
         this.password = password;
         this.phoneNum = phoneNum;
         this.profileUrl = profileUrl;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public Member(
+            String name,
+            Integer point,
+            String email,
+            SocialType socialType,
+            String socialUid
+    ) {
+        this.name = name;
+        this.gender = Gender.NONE;
+        this.birth = LocalDate.now();
+        this.address = "";
+        this.point = point;
+        this.email = email;
+        this.password = "";
+        this.phoneNum = "";
+        this.profileUrl = "";
+        this.socialType = socialType;
+        this.socialUid = socialUid;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -105,5 +134,9 @@ public class Member {
 
     public boolean isPasswordMatched(String password) {
         return this.password.equals(password);
+    }
+
+    public String getSocialUid() {
+        return this.socialUid;
     }
 }
